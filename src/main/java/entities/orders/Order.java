@@ -1,6 +1,7 @@
 package entities.orders;
 
 import entities.Address;
+import entities.users.User;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -61,6 +62,10 @@ public class Order {
     @NaturalId
     @Column(name = "OrderTrackingNumber")
     private String orderTrackingNumber;
+
+    @ManyToOne
+    @JoinColumn(name = "OrderUserID")
+    private User orderUser;
 
     @NaturalId
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,
@@ -165,6 +170,14 @@ public class Order {
         this.orderTrackingNumber = orderTrackingNumber;
     }
 
+    public User getOrderUser() {
+        return orderUser;
+    }
+
+    public void setOrderUser(User orderUser) {
+        this.orderUser = orderUser;
+    }
+
     public Address getAddress() {
         return address;
     }
@@ -197,6 +210,7 @@ public class Order {
                 Objects.equals(getOrderEmail(), order.getOrderEmail()) &&
                 Objects.equals(getOrderDate(), order.getOrderDate()) &&
                 Objects.equals(getOrderTrackingNumber(), order.getOrderTrackingNumber()) &&
+                Objects.equals(getOrderUser(), order.getOrderUser()) &&
                 Objects.equals(getAddress(), order.getAddress()) &&
                 Objects.equals(getOrderDetails(), order.getOrderDetails());
     }
@@ -204,7 +218,7 @@ public class Order {
     @Override
     public int hashCode() {
 
-        return Objects.hash(getOrderId(), getOrderPrice(), getOrderShipName(), getOrderPhone(), getOrderFax(), getOrderShipping(), getOrderTax(), getOrderEmail(), getOrderDate(), isOrderShipped(), getOrderTrackingNumber(), getAddress(), getOrderDetails());
+        return Objects.hash(getOrderId(), getOrderPrice(), getOrderShipName(), getOrderPhone(), getOrderFax(), getOrderShipping(), getOrderTax(), getOrderEmail(), getOrderDate(), isOrderShipped(), getOrderTrackingNumber(), getOrderUser(), getAddress(), getOrderDetails());
     }
 
     @Override
@@ -221,6 +235,7 @@ public class Order {
                 ", orderDate=" + orderDate +
                 ", orderShipped=" + orderShipped +
                 ", orderTrackingNumber='" + orderTrackingNumber + '\'' +
+                ", orderUser=" + orderUser +
                 ", address=" + address +
                 ", orderDetails=" + orderDetails +
                 '}';

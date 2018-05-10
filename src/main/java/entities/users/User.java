@@ -1,6 +1,7 @@
 package entities.users;
 
 import entities.Address;
+import entities.orders.Order;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.NotFoundAction;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users", schema = "webshop_db")
@@ -66,6 +68,10 @@ public class User {
     @Basic
     @Column(name = "UserFax")
     private String userFax;
+
+
+    @OneToMany(mappedBy = "orderUser")
+    private Set<Order> userOrders;
 
     public User() {
     }
@@ -166,6 +172,14 @@ public class User {
         this.userFax = userFax;
     }
 
+    public Set<Order> getUserOrders() {
+        return userOrders;
+    }
+
+    public void setUserOrders(Set<Order> userOrders) {
+        this.userOrders = userOrders;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -182,13 +196,14 @@ public class User {
                 Objects.equals(getUserVerificationCode(), user.getUserVerificationCode()) &&
                 Objects.equals(getUserIp(), user.getUserIp()) &&
                 Objects.equals(getUserPhone(), user.getUserPhone()) &&
-                Objects.equals(getUserFax(), user.getUserFax());
+                Objects.equals(getUserFax(), user.getUserFax()) &&
+                Objects.equals(getUserOrders(), user.getUserOrders());
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(getUserId(), getUserEmail(), getUserPassword(), getUserFirstName(), getUserLastName(), getAddress(), getUserEmailVerified(), getUserRegistrationDate(), getUserVerificationCode(), getUserIp(), getUserPhone(), getUserFax());
+        return Objects.hash(getUserId(), getUserEmail(), getUserPassword(), getUserFirstName(), getUserLastName(), getAddress(), getUserEmailVerified(), getUserRegistrationDate(), getUserVerificationCode(), getUserIp(), getUserPhone(), getUserFax(), getUserOrders());
     }
 
     @Override
@@ -206,6 +221,7 @@ public class User {
                 ", userIp='" + userIp + '\'' +
                 ", userPhone='" + userPhone + '\'' +
                 ", userFax='" + userFax + '\'' +
+                ", userOrders=" + userOrders +
                 '}';
     }
 }

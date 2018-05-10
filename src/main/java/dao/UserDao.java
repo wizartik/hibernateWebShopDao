@@ -17,7 +17,7 @@ public interface UserDao {
 
     User login(String email, String password);
 
-    User getUserBEmail(String email);
+    User getUserByEmail(String email);
 
     User getUser(int id);
 

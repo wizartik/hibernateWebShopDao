@@ -3,8 +3,9 @@ package dao.responses.users;
 import static dao.responses.users.Messages.*;
 
 public enum UserDaoResponse {
-    OK,
+    OK("OK"),
     CONNECTION_PROBLEMS(CONNECTION_PROBLEMS_MESSAGE),
+    UNKNOWN_ERROR(UNKNOWN_ERROR_MESSAGE),
     EMAIL_TAKEN(EMAIL_TAKEN_MESSAGE),
     INVALID_MESSAGE(INVALID_EMAIL_MESSAGE),
     SHORT_PASSWORD(SHORT_PASSWORD_MESSAGE),

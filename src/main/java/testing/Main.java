@@ -1,6 +1,9 @@
 package testing;
 
-import dao.util.MD5Generator;
+import dao.UserDao;
+import dao.impl.UserDaoImpl;
+import dao.responses.users.UserDaoResponse;
+import entities.users.User;
 
 public class Main {
 
@@ -16,8 +19,18 @@ public class Main {
 //        entityManager.persist(user);
 //        entityManager.getTransaction().commit();
 
-        MD5Generator md5Generator = new MD5Generator();
+        UserDao userDao = new UserDaoImpl();
 
+        int count = 0;
+        for (int i = 0; i < 1000; i++) {
+            User user = new UserFactory().getRandomUser();
+
+            if(userDao.registerUser(user) == UserDaoResponse.OK){
+                count++;
+            }
+        }
+
+        System.out.println(count);
     }
 
 }

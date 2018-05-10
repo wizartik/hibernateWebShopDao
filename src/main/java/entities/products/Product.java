@@ -89,6 +89,9 @@ public class Product {
     @NotFound(action = NotFoundAction.IGNORE)
     private Set<Option> options = new HashSet<>();
 
+    public Product() {
+    }
+
     public int getProductId() {
         return productId;
     }

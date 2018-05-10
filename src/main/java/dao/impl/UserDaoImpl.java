@@ -2,8 +2,10 @@ package dao.impl;
 
 import dao.UserDao;
 import dao.responses.users.UserDaoResponse;
+import dao.util.MD5Generator;
 import entities.orders.Order;
 import entities.users.User;
+import entities.users.User_;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -15,8 +17,7 @@ import javax.persistence.criteria.Root;
 import java.sql.Timestamp;
 import java.util.List;
 
-import static dao.responses.users.UserDaoResponse.CONNECTION_PROBLEMS;
-import static dao.responses.users.UserDaoResponse.OK;
+import static dao.responses.users.UserDaoResponse.*;
 
 public class UserDaoImpl implements UserDao {
 
@@ -31,9 +32,18 @@ public class UserDaoImpl implements UserDao {
     public UserDaoResponse registerUser(User user) {
         UserDaoResponse userDaoResponse = OK;
 
+        entityManager.getTransaction().begin();
+        if (user.getUserEmail() != null && isEmailExists(user.getUserEmail())) {
+            userDaoResponse = EMAIL_TAKEN;
+        } else if (user.getUserPassword() != null) {
+            encryptPassword(user);
+            entityManager.persist(user);
+        } else {
+            userDaoResponse = UNKNOWN_ERROR;
+        }
+        entityManager.getTransaction().commit();
 
-
-        return null;
+        return userDaoResponse;
     }
 
     @Override
@@ -59,7 +69,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User getUserBEmail(String email) {
+    public User getUserByEmail(String email) {
         return null;
     }
 
@@ -93,12 +103,12 @@ public class UserDaoImpl implements UserDao {
         return null;
     }
 
-    private boolean isEmailExists(String email){
+    private boolean isEmailExists(String email) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteria = builder.createQuery(User.class);
         Root<User> from = criteria.from(User.class);
         criteria.select(from);
-        criteria.where(builder.equal(from.get(User_.scn), email));
+        criteria.where(builder.equal(from.get(User_.userEmail), email));
         TypedQuery<User> typed = entityManager.createQuery(criteria);
         try {
             typed.getSingleResult();
@@ -106,5 +116,10 @@ public class UserDaoImpl implements UserDao {
         } catch (final NoResultException nre) {
             return false;
         }
+    }
+
+    private void encryptPassword(User user) {
+        MD5Generator md5Generator = new MD5Generator();
+        user.setUserPassword(md5Generator.generateMD5(user.getUserPassword()));
     }
 }
