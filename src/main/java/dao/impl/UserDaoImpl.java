@@ -3,19 +3,19 @@ package dao.impl;
 import dao.UserDao;
 import dao.impl.responses.users.UserDaoResponse;
 import dao.util.MD5Generator;
-import entities.orders.Order;
 import entities.users.User;
 import entities.users.User_;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.SingularAttribute;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import static dao.impl.responses.users.UserDaoResponse.*;
@@ -72,8 +72,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User login(String email, String password) {
-
-
         MD5Generator md5Generator = new MD5Generator();
 
         String generatedPassword = md5Generator.generateMD5(password);
@@ -94,43 +92,80 @@ public class UserDaoImpl implements UserDao {
             user = entityManager.createQuery(query).getSingleResult();
         } catch (Exception ignored) {
         }
-
         return user;
     }
 
     @Override
     public User getUserByEmail(String email) {
-        return null;
+        return getUserByString(User_.userEmail, email);
     }
 
     @Override
     public User getUser(int id) {
-        return null;
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
+        Root<User> from = query.from(User.class);
+
+        query.select(from);
+        query.where(criteriaBuilder.equal(from.get(User_.userId), id));
+
+        User user = null;
+
+        try {
+            user = entityManager.createQuery(query).getSingleResult();
+        } catch (Exception ignored) {
+        }
+
+        return user;
     }
 
     @Override
     public User getUserByIP(String ip) {
-        return null;
+        return getUserByString(User_.userIp, ip);
     }
 
     @Override
     public User getUserByPhone(String phoneNumber) {
-        return null;
-    }
-
-    @Override
-    public User getUserByOrder(Order order) {
-        return null;
+        return getUserByString(User_.userPhone, phoneNumber);
     }
 
     @Override
     public List<User> getUsersSinceDate(Timestamp timestamp) {
-        return null;
+
+        String query = "SELECT u " +
+                "from User u WHERE u.userRegistrationDate > :timestamp";
+
+        TypedQuery<User> typedQuery = entityManager.createQuery(query, User.class);
+
+        List<User> users;
+
+        try {
+            users = typedQuery.getResultList();
+        } catch (Exception e) {
+            users = new ArrayList<>(0);
+        }
+
+        return users;
     }
 
     @Override
     public List<User> getNonVerifiedUsers() {
-        return null;
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
+        Root<User> from = query.from(User.class);
+        query.select(from);
+        query.where(criteriaBuilder.equal(from.get(User_.userEmailVerified), false));
+
+        List<User> users;
+
+        try {
+            users = entityManager.createQuery(query).getResultList();
+        } catch (Exception e) {
+            users = new ArrayList<>(0);
+        }
+
+        return users;
     }
 
     @Override
@@ -144,22 +179,30 @@ public class UserDaoImpl implements UserDao {
     }
 
     private boolean isEmailExists(String email) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteria = builder.createQuery(User.class);
-        Root<User> from = criteria.from(User.class);
-        criteria.select(from);
-        criteria.where(builder.equal(from.get(User_.userEmail), email));
-        TypedQuery<User> typed = entityManager.createQuery(criteria);
-        try {
-            typed.getSingleResult();
-            return true;
-        } catch (final NoResultException nre) {
-            return false;
-        }
+        return getUserByString(User_.userEmail, email) != null;
     }
 
     private void encryptPassword(User user) {
         MD5Generator md5Generator = new MD5Generator();
         user.setUserPassword(md5Generator.generateMD5(user.getUserPassword()));
+    }
+
+    private User getUserByString(SingularAttribute<User, String> attribute,
+                                 String string) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
+        Root<User> from = query.from(User.class);
+
+        query.select(from);
+        query.where(criteriaBuilder.equal(from.get(attribute), string));
+
+        User user = null;
+        try {
+            user = entityManager.createQuery(query).getSingleResult();
+        } catch (Exception ignored) {
+        }
+
+        return user;
     }
 }

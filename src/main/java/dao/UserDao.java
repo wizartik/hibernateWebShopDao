@@ -1,7 +1,6 @@
 package dao;
 
 import dao.impl.responses.users.UserDaoResponse;
-import entities.orders.Order;
 import entities.users.User;
 
 import java.sql.Timestamp;
@@ -24,8 +23,6 @@ public interface UserDao {
     User getUserByIP(String ip);
 
     User getUserByPhone(String phoneNumber);
-
-    User getUserByOrder(Order order);
 
     List<User> getUsersSinceDate(Timestamp timestamp);
 
