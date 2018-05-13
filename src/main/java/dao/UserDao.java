@@ -1,6 +1,6 @@
 package dao;
 
-import dao.responses.users.UserDaoResponse;
+import dao.impl.responses.users.UserDaoResponse;
 import entities.orders.Order;
 import entities.users.User;
 
@@ -30,4 +30,6 @@ public interface UserDao {
     List<User> getUsersSinceDate(Timestamp timestamp);
 
     List<User> getNonVerifiedUsers();
+
+    List<User> getAllUsers();
 }

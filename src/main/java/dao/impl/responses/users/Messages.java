@@ -1,4 +1,4 @@
-package dao.responses.users;
+package dao.impl.responses.users;
 
 public interface Messages {
    String EMAIL_TAKEN_MESSAGE = "This email is already taken";

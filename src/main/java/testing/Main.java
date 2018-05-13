@@ -2,7 +2,6 @@ package testing;
 
 import dao.UserDao;
 import dao.impl.UserDaoImpl;
-import dao.responses.users.UserDaoResponse;
 import entities.users.User;
 
 public class Main {
@@ -21,16 +20,15 @@ public class Main {
 
         UserDao userDao = new UserDaoImpl();
 
-        int count = 0;
-        for (int i = 0; i < 1000; i++) {
-            User user = new UserFactory().getRandomUser();
+        User user = new UserFactory().getRandomUser();
 
-            if(userDao.registerUser(user) == UserDaoResponse.OK){
-                count++;
-            }
-        }
+        user.setUserEmail("qwe");
+        user.setUserPassword("123");
 
-        System.out.println(count);
+        userDao.registerUser(user);
+
+        System.out.println(userDao.login("qwe", "1213"));
+
     }
 
 }

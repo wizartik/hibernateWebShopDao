@@ -1,6 +1,6 @@
-package dao.responses.users;
+package dao.impl.responses.users;
 
-import static dao.responses.users.Messages.*;
+import static dao.impl.responses.users.Messages.*;
 
 public enum UserDaoResponse {
     OK("OK"),

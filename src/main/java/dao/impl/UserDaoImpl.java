@@ -1,7 +1,7 @@
 package dao.impl;
 
 import dao.UserDao;
-import dao.responses.users.UserDaoResponse;
+import dao.impl.responses.users.UserDaoResponse;
 import dao.util.MD5Generator;
 import entities.orders.Order;
 import entities.users.User;
@@ -13,11 +13,12 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.sql.Timestamp;
 import java.util.List;
 
-import static dao.responses.users.UserDaoResponse.*;
+import static dao.impl.responses.users.UserDaoResponse.*;
 
 public class UserDaoImpl implements UserDao {
 
@@ -60,12 +61,41 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public UserDaoResponse deleteUser(User user) {
-        return null;
+        UserDaoResponse response = OK;
+        try {
+            entityManager.remove(user);
+        } catch (Exception e) {
+            response = CONNECTION_PROBLEMS;
+        }
+        return response;
     }
 
     @Override
     public User login(String email, String password) {
-        return null;
+
+
+        MD5Generator md5Generator = new MD5Generator();
+
+        String generatedPassword = md5Generator.generateMD5(password);
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
+        Root<User> from = query.from(User.class);
+
+        query.select(from);
+
+        Predicate and = criteriaBuilder.and(criteriaBuilder.equal(from.get(User_.userEmail), email),
+                criteriaBuilder.equal(from.get(User_.userPassword), generatedPassword));
+
+        query.where(and);
+
+        User user = null;
+        try {
+            user = entityManager.createQuery(query).getSingleResult();
+        } catch (Exception ignored) {
+        }
+
+        return user;
     }
 
     @Override
@@ -101,6 +131,16 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> getNonVerifiedUsers() {
         return null;
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
+        Root<User> from = query.from(User.class);
+        query.select(from);
+        TypedQuery<User> typedQuery = entityManager.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     private boolean isEmailExists(String email) {
