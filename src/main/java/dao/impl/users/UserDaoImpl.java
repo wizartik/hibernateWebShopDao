@@ -1,8 +1,9 @@
-package dao.impl;
+package dao.impl.users;
 
 import dao.UserDao;
 import dao.impl.responses.users.UserDaoResponse;
 import dao.util.MD5Generator;
+import dao.util.Validator;
 import entities.users.User;
 import entities.users.User_;
 
@@ -25,13 +26,24 @@ public class UserDaoImpl implements UserDao {
     private static EntityManager entityManager;
 
     static {
-        entityManager = Persistence.createEntityManagerFactory("entities")
+        entityManager = Persistence
+                .createEntityManagerFactory("entities")
                 .createEntityManager();
     }
 
     @Override
     public UserDaoResponse registerUser(User user) {
         UserDaoResponse userDaoResponse = OK;
+
+        Validator validator = new Validator();
+
+        if (!validator.validateEmail(user.getUserEmail())){
+            return UserDaoResponse.INVALID_EMAIL;
+        } else if (validator.isPasswordLong(user.getUserPassword())){
+            return UserDaoResponse.LONG_PASSWORD;
+        } else if (validator.isPasswordShort(user.getUserPassword())){
+            return UserDaoResponse.SHORT_PASSWORD;
+        }
 
         entityManager.getTransaction().begin();
         if (user.getUserEmail() != null && isEmailExists(user.getUserEmail())) {
@@ -109,7 +121,6 @@ public class UserDaoImpl implements UserDao {
 
         query.select(from);
         query.where(criteriaBuilder.equal(from.get(User_.userId), id));
-
         User user = null;
 
         try {
@@ -137,7 +148,7 @@ public class UserDaoImpl implements UserDao {
                 "from User u WHERE u.userRegistrationDate > :timestamp";
 
         TypedQuery<User> typedQuery = entityManager.createQuery(query, User.class);
-
+        typedQuery.setParameter("timestamp", timestamp);
         List<User> users;
 
         try {

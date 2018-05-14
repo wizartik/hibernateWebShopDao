@@ -1,5 +1,6 @@
 package dao;
 
+import dao.impl.users.UserDaoImpl;
 import dao.impl.responses.users.UserDaoResponse;
 import entities.users.User;
 
@@ -7,6 +8,10 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface UserDao {
+
+    default UserDao getInstance(){
+        return new UserDaoImpl();
+    }
 
     UserDaoResponse registerUser(User user);
 
