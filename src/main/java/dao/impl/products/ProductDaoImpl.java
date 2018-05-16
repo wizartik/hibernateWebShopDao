@@ -1,6 +1,6 @@
 package dao.impl.products;
 
-import dao.ProductDao;
+import dao.products.ProductDao;
 import dao.impl.responses.products.ProductDaoResponse;
 import entities.products.Category;
 import entities.products.Product;
@@ -31,22 +31,8 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public Product getProduct(int id) {
-        CriteriaQuery<Product> query = criteriaBuilder.createQuery(Product.class);
-        Root<Product> from = query.from(Product.class);
-
-        query.select(from);
-
-        query.where(criteriaBuilder.equal(from.get(Product_.productId), id));
-
-        Product product = null;
-
-        try {
-            product = entityManager.createQuery(query).getSingleResult();
-        } catch (Exception ignored) {
-        }
-
-        return product;
+    public Product getProduct(long id) {
+        return entityManager.find(Product.class, id);
     }
 
     @Override

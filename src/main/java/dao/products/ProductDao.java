@@ -1,4 +1,4 @@
-package dao;
+package dao.products;
 
 import dao.impl.products.ProductDaoImpl;
 import dao.impl.responses.products.ProductDaoResponse;
@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface ProductDao {
 
-    default ProductDao getInstance(){
+    static ProductDao getInstance(){
         return new ProductDaoImpl();
     }
 
-    Product getProduct(int id);
+    Product getProduct(long id);
 
     Product getProductBySKU(String SKU);
 

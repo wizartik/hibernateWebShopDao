@@ -1,4 +1,4 @@
-package dao;
+package dao.orders;
 
 public interface OrderDao {
 }

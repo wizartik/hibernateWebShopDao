@@ -19,7 +19,7 @@ public class Option {
 
 
     @NaturalId
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "OptionGroupID")
     private OptionGroup optionGroup;
 

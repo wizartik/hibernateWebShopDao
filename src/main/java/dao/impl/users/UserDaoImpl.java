@@ -1,6 +1,6 @@
 package dao.impl.users;
 
-import dao.UserDao;
+import dao.users.UserDao;
 import dao.impl.responses.users.UserDaoResponse;
 import dao.util.MD5Generator;
 import dao.util.Validator;
@@ -113,22 +113,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User getUser(int id) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-
-        CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
-        Root<User> from = query.from(User.class);
-
-        query.select(from);
-        query.where(criteriaBuilder.equal(from.get(User_.userId), id));
-        User user = null;
-
-        try {
-            user = entityManager.createQuery(query).getSingleResult();
-        } catch (Exception ignored) {
-        }
-
-        return user;
+    public User getUser(long id) {
+        return entityManager.find(User.class, id);
     }
 
     @Override

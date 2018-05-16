@@ -1,10 +1,6 @@
 package testing;
 
-import dao.UserDao;
-import dao.impl.users.UserDaoImpl;
-import entities.users.User;
-
-import java.sql.Timestamp;
+import dao.products.CategoryDao;
 
 public class Main {
 
@@ -19,27 +15,33 @@ public class Main {
 //        System.out.println(user);
 //        entityManager.persist(user);
 //        entityManager.getTransaction().commit();
+//
+//        UserDao userDao = new UserDaoImpl();
+//
+//        User user = new UserFactory().getRandomUser();
+//
+//        user.setUserEmail("qwe");
+//        user.setUserPassword("123");
+//
+//        userDao.registerUser(user);
+//
+////        System.out.println("get all users " + userDao.getAllUsers());
+////        System.out.println("by id " + userDao.getUser(100));
+////        System.out.println("by email " + userDao.getUserByEmail("calin@gmail" +
+////                ".com"));
+////        System.out.println("nonverified " + userDao.getNonVerifiedUsers());
+//
+//        Timestamp timestamp = new UserFactory().getRandomUser()
+//                .getUserRegistrationDate();
+//
+//        System.out.println(timestamp);
+//        System.out.println(userDao.getUsersSinceDate(timestamp));
 
-        UserDao userDao = new UserDaoImpl();
+        CategoryDao categoryDao = CategoryDao.getInstance();
 
-        User user = new UserFactory().getRandomUser();
+        System.out.println(categoryDao.getCategoriesByParent(categoryDao
+                .getCategory(7)));
 
-        user.setUserEmail("qwe");
-        user.setUserPassword("123");
-
-        userDao.registerUser(user);
-
-//        System.out.println("get all users " + userDao.getAllUsers());
-//        System.out.println("by id " + userDao.getUser(100));
-//        System.out.println("by email " + userDao.getUserByEmail("calin@gmail" +
-//                ".com"));
-//        System.out.println("nonverified " + userDao.getNonVerifiedUsers());
-
-        Timestamp timestamp = new UserFactory().getRandomUser()
-                .getUserRegistrationDate();
-
-        System.out.println(timestamp);
-        System.out.println(userDao.getUsersSinceDate(timestamp));
     }
 
 }

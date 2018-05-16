@@ -1,4 +1,4 @@
-package dao;
+package dao.users;
 
 import dao.impl.users.UserDaoImpl;
 import dao.impl.responses.users.UserDaoResponse;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserDao {
 
-    default UserDao getInstance(){
+    static UserDao getInstance(){
         return new UserDaoImpl();
     }
 
@@ -23,7 +23,7 @@ public interface UserDao {
 
     User getUserByEmail(String email);
 
-    User getUser(int id);
+    User getUser(long id);
 
     User getUserByIP(String ip);
 
