@@ -12,6 +12,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "orders", schema = "webshop_db")
+@NamedEntityGraph(name = "entities.orders.Order.orderDetails",
+        attributeNodes = @NamedAttributeNode("orderDetails"))
 public class Order {
 
     @Id
@@ -75,7 +77,7 @@ public class Order {
     private Address address;
 
     @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST,
-                          CascadeType.REFRESH, CascadeType.REMOVE},
+            CascadeType.REFRESH, CascadeType.REMOVE},
             fetch = FetchType.LAZY, mappedBy = "detailOrderID")
     private Set<OrderDetail> orderDetails = new LinkedHashSet<>();
 

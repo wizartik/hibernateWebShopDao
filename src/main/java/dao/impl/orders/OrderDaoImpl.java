@@ -3,6 +3,7 @@ package dao.impl.orders;
 import dao.orders.OrderDao;
 import entities.orders.Order;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
@@ -50,9 +51,15 @@ public class OrderDaoImpl implements OrderDao {
     public List<Order> getOrdersInDateRange(Timestamp from, Timestamp to) {
         String query = "SELECT o FROM Order o where o.orderDate BETWEEN :fromDate AND :toDate";
 
+        EntityGraph entityGraph = entityManager
+                .createEntityGraph("entities.orders.Order.orderDetails");
+
         TypedQuery<Order> typedQuery = entityManager.createQuery(query, Order.class);
         typedQuery.setParameter("fromDate", from);
         typedQuery.setParameter("toDate", to);
+
+        typedQuery.setHint("javax.persistence.fetchgraph", entityGraph);
+
         return typedQuery.getResultList();
     }
 

@@ -13,6 +13,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users", schema = "webshop_db")
+@NamedEntityGraph(name = "entities.users.User.userOrders",
+        attributeNodes = @NamedAttributeNode(value = "userOrders",
+                subgraph = "userOrdersSubgraph"),
+        subgraphs = @NamedSubgraph(name = "userOrdersSubgraph",
+                attributeNodes = @NamedAttributeNode(value = "OrderDetails")))
 public class User {
 
     @Id
@@ -68,7 +73,6 @@ public class User {
     @Basic
     @Column(name = "UserFax")
     private String userFax;
-
 
     @OneToMany(mappedBy = "orderUser")
     private Set<Order> userOrders;
