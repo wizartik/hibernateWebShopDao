@@ -13,7 +13,7 @@ public interface ProductDao {
         return new ProductDaoImpl();
     }
 
-    Product getProduct(long id);
+    Product getProduct(int id);
 
     Product getProductBySKU(String SKU);
 

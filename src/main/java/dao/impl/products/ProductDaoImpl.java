@@ -23,7 +23,7 @@ public class ProductDaoImpl implements ProductDao {
     private static EntityManager entityManager;
     private static CriteriaBuilder criteriaBuilder;
 
-    static {
+    {
         entityManager = Persistence
                 .createEntityManagerFactory("entities")
                 .createEntityManager();
@@ -31,7 +31,7 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public Product getProduct(long id) {
+    public Product getProduct(int id) {
         return entityManager.find(Product.class, id);
     }
 

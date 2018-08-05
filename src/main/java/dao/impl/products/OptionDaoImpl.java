@@ -18,10 +18,10 @@ import java.util.List;
 
 public class OptionDaoImpl implements OptionDao {
 
-    private static EntityManager entityManager;
-    private static CriteriaBuilder criteriaBuilder;
+    private EntityManager entityManager;
+    private CriteriaBuilder criteriaBuilder;
 
-    static {
+    {
         entityManager = Persistence
                 .createEntityManagerFactory("entities")
                 .createEntityManager();

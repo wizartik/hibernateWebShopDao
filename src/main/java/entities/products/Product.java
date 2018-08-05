@@ -6,7 +6,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -84,10 +83,10 @@ public class Product {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinTable(name = "productoptions",
-            joinColumns = @JoinColumn(name = "ProductID"),
-            inverseJoinColumns = @JoinColumn(name = "OptionID"))
+            joinColumns = @JoinColumn(name = "OptionID"),
+            inverseJoinColumns = @JoinColumn(name = "ProductID"))
     @NotFound(action = NotFoundAction.IGNORE)
-    private Set<Option> options = new HashSet<>();
+    private Set<Option> options;
 
     public Product() {
     }

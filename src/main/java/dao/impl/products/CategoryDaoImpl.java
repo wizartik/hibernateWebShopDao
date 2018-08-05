@@ -15,10 +15,10 @@ import java.util.List;
 
 public class CategoryDaoImpl implements CategoryDao {
 
-    private static EntityManager entityManager;
-    private static CriteriaBuilder criteriaBuilder;
+    private EntityManager entityManager;
+    private CriteriaBuilder criteriaBuilder;
 
-    static {
+    {
         entityManager = Persistence
                 .createEntityManagerFactory("entities")
                 .createEntityManager();

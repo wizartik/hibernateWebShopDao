@@ -23,9 +23,9 @@ import static dao.impl.responses.users.UserDaoResponse.*;
 
 public class UserDaoImpl implements UserDao {
 
-    private static EntityManager entityManager;
+    private EntityManager entityManager;
 
-    static {
+    {
         entityManager = Persistence
                 .createEntityManagerFactory("entities")
                 .createEntityManager();
@@ -37,11 +37,11 @@ public class UserDaoImpl implements UserDao {
 
         Validator validator = new Validator();
 
-        if (!validator.validateEmail(user.getUserEmail())){
+        if (!validator.validateEmail(user.getUserEmail())) {
             return UserDaoResponse.INVALID_EMAIL;
-        } else if (validator.isPasswordLong(user.getUserPassword())){
+        } else if (validator.isPasswordLong(user.getUserPassword())) {
             return UserDaoResponse.LONG_PASSWORD;
-        } else if (validator.isPasswordShort(user.getUserPassword())){
+        } else if (validator.isPasswordShort(user.getUserPassword())) {
             return UserDaoResponse.SHORT_PASSWORD;
         }
 
